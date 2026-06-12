@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>292 Performance — Collega il tuo WHOOP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c10;--panel:#12151c;--line:#232936;--text:#e8ebf2;--muted:#97a0b2;--acc:#34d39b;--acc2:#1f9e72}
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  background-image:radial-gradient(ellipse 60% 40% at 50% -10%,rgba(52,211,155,.09),transparent)}
+.card{width:100%;max-width:460px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:38px 34px;text-align:center}
+.kick{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.45em;color:var(--acc);margin-bottom:8px}
+h1{font-family:'Sora',sans-serif;font-size:34px;font-weight:700;letter-spacing:.02em;margin-bottom:18px}
+h1 span{color:var(--acc)}
+p{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+ul{text-align:left;margin:18px auto 24px;max-width:340px;list-style:none}
+li{font-size:13px;color:var(--muted);padding:7px 0 7px 26px;position:relative;border-bottom:1px solid var(--line)}
+li:last-child{border-bottom:none}
+li::before{content:'✓';position:absolute;left:2px;color:var(--acc);font-weight:600}
+.btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#07130d;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;border:none;border-radius:12px;
+  padding:15px 34px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(52,211,155,.3)}
+.note{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5b6373;margin-top:22px;line-height:1.7}
+.err{display:none;margin-top:16px;font-size:12px;color:#e0796e;background:rgba(224,121,110,.08);
+  border:1px solid rgba(224,121,110,.35);border-radius:9px;padding:9px 12px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="kick">WHOOP CONNECT</div>
+  <h1>292 <span>PERFORMANCE</span></h1>
+  <p>Collega il tuo account WHOOP per condividere i tuoi dati di performance con il team. Verrai portato sulla pagina ufficiale WHOOP, dove accedi con le tue credenziali e confermi il consenso.</p>
+  <ul>
+    <li>Recupero, sonno e ciclo giornaliero</li>
+    <li>Allenamenti e carico di lavoro</li>
+    <li>Profilo e misure corporee</li>
+    <li>Puoi revocare il consenso in ogni momento dall'app WHOOP</li>
+  </ul>
+  <button class="btn" onclick="go()">Collega il tuo WHOOP →</button>
+  <div class="err" id="err">Configurazione mancante: CLIENT_ID / REDIRECT_URI non impostati.</div>
+  <div class="note">I dati vengono usati esclusivamente per l'analisi della performance del team 292.<br>Nessuna credenziale WHOOP transita da questa pagina.</div>
+</div>
+<script>
+// === CONFIG ===
+var CLIENT_ID    = "INSERIRE_CLIENT_ID";
+var REDIRECT_URI = "INSERIRE_REDIRECT_URI";   // deve coincidere con quello registrato nella app WHOOP
+var SCOPES = "read:profile read:recovery read:sleep read:workout read:cycles read:body_measurement offline";
+// ==============
+function go(){
+  if (CLIENT_ID.indexOf("INSERIRE") === 0 || REDIRECT_URI.indexOf("INSERIRE") === 0) {
+    document.getElementById('err').style.display = 'block'; return;
+  }
+  var state = Array.from(crypto.getRandomValues(new Uint8Array(12)), function(b){return ('0'+b.toString(16)).slice(-2);}).join('');
+  var u = "https://api.prod.whoop.com/oauth/oauth2/auth"
+    + "?response_type=code"
+    + "&client_id="    + encodeURIComponent(CLIENT_ID)
+    + "&redirect_uri=" + encodeURIComponent(REDIRECT_URI)
+    + "&scope="        + encodeURIComponent(SCOPES)
+    + "&state="        + state;
+  location.href = u;
+}
+</script>
+</body>
+</html>
